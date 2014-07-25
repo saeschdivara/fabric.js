@@ -9042,10 +9042,10 @@ fabric.util.object.extend(fabric.Object.prototype, {
             parsedAttributes.top -= options.height ? options.height / 2 : 0;
         }
         if (options.height === options.heightAttr) {
-            options.height = parsedAttributes.radius;
+            options.height = parsedAttributes.radius * 2;
         }
         if (options.width === options.widthAttr) {
-            options.width = parsedAttributes.radius;
+            options.width = parsedAttributes.radius * 2;
         }
         var obj = new fabric.Circle(extend(parsedAttributes, options));
         obj.cx = parseFloat(element.getAttribute("cx")) || 0;
