@@ -297,6 +297,33 @@
     },
 
     /**
+     * After an import there could be a transformMatrix
+     * which is checked here.
+     *
+     * @return {Array} Transformation array
+     */
+    getCurrentTransformation: function() {
+      var vpt = this.getViewportTransform(),
+          tm = this.transformMatrix;
+
+      //check if it is this [1, 0, 0, 1, 0, 0]
+      if (vpt[0] == 1 &&
+          vpt[1] == 0 &&
+          vpt[2] == 0 &&
+          vpt[3] == 1 &&
+          vpt[4] == 0 &&
+          vpt[5] == 0 &&
+          // This is probably only true after an import
+          tm != null
+        ) {
+          return tm;
+      }
+      else {
+        return vpt;
+      }
+    },
+
+    /**
      * Sets corner position coordinates based on current angle, width and height
      * @return {fabric.Object} thisArg
      * @chainable
@@ -304,17 +331,17 @@
     setCoords: function() {
       var strokeWidth = this.strokeWidth > 1 ? this.strokeWidth : 0,
           theta = degreesToRadians(this.angle),
-          vpt = this.getViewportTransform(),
-          f = function (p) {
-            return fabric.util.transformPoint(p, vpt);
-          },
           w = this.width,
           h = this.height,
           capped = this.strokeLineCap === 'round' || this.strokeLineCap === 'square',
           vLine = this.type === 'line' && this.width === 1,
           hLine = this.type === 'line' && this.height === 1,
           strokeW = (capped && hLine) || this.type !== 'line',
-          strokeH = (capped && vLine) || this.type !== 'line';
+          strokeH = (capped && vLine) || this.type !== 'line',
+          transformation = this.getCurrentTransformation(),
+          f = function (p) {
+            return fabric.util.transformPoint(p, transformation);
+          };
 
       if (vLine) {
         w = strokeWidth;
