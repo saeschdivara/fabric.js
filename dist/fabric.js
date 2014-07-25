@@ -17363,15 +17363,6 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
       parsedAttributes.top -= options.height ? (options.height / 2) : 0;
     }
 
-    // The circle height has to be the radius
-    if (options.height === options.heightAttr) {
-      options.height = parsedAttributes.radius * 2;
-    }
-    // The circle width has to be the radius
-    if (options.width === options.widthAttr) {
-      options.width = parsedAttributes.radius * 2;
-    }
-
     var obj = new fabric.Circle(extend(parsedAttributes, options));
 
     obj.cx = parseFloat(element.getAttribute('cx')) || 0;
