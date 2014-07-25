@@ -306,17 +306,8 @@
       var vpt = this.getViewportTransform(),
           tm = this.transformMatrix;
 
-      //check if it is this [1, 0, 0, 1, 0, 0]
-      if (vpt[0] == 1 &&
-          vpt[1] == 0 &&
-          vpt[2] == 0 &&
-          vpt[3] == 1 &&
-          vpt[4] == 0 &&
-          vpt[5] == 0 &&
-          // This is probably only true after an import
-          tm != null
-        ) {
-          return tm;
+      if (tm != null) {
+        return fabric.util.multiplyTransformMatrices(tm, vpt);
       }
       else {
         return vpt;
