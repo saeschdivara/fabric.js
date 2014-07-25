@@ -8983,8 +8983,8 @@ fabric.util.object.extend(fabric.Object.prototype, {
         radius: 0,
         initialize: function(options) {
             options = options || {};
-            this.set("radius", options.radius || 0);
             this.callSuper("initialize", options);
+            this.set("radius", options.radius || 0);
         },
         _set: function(key, value) {
             this.callSuper("_set", key, value);

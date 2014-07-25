@@ -17233,8 +17233,8 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
     initialize: function(options) {
       options = options || { };
 
-      this.set('radius', options.radius || 0);
       this.callSuper('initialize', options);
+      this.set('radius', options.radius || 0);
     },
 
     /**
