@@ -1008,7 +1008,7 @@
      * @param {Boolean} [noTransform] When true, context is not transformed
      */
     _renderControls: function(ctx, noTransform) {
-      var vpt = this.getViewportTransform();
+      var vpt = this.getCurrentTransformation();
 
       ctx.save();
       if (this.active && !noTransform) {

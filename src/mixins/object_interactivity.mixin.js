@@ -266,7 +266,7 @@
 
       var padding = this.padding,
           padding2 = padding * 2,
-          vpt = this.getViewportTransform();
+          vpt = this.getCurrentTransformation();
 
       ctx.save();
 
@@ -345,7 +345,7 @@
 
       var size = this.cornerSize,
           size2 = size / 2,
-          vpt = this.getViewportTransform(),
+          vpt = this.getCurrentTransformation(),
           strokeWidth = this.strokeWidth > 1 ? this.strokeWidth : 0,
           w = this.width,
           h = this.height,

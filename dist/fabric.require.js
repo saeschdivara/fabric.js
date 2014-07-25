@@ -7754,9 +7754,6 @@ fabric.util.object.extend(fabric.StaticCanvas.prototype, {
         },
         render: function(ctx, noTransform) {
             if (this.width === 0 || this.height === 0 || !this.visible) return;
-            fabric.log(this.toString());
-            fabric.log("height: " + this.height);
-            fabric.log("width: " + this.width);
             ctx.save();
             this._setupFillRule(ctx);
             this._transform(ctx, noTransform);
@@ -7799,7 +7796,7 @@ fabric.util.object.extend(fabric.StaticCanvas.prototype, {
             }
         },
         _renderControls: function(ctx, noTransform) {
-            var vpt = this.getViewportTransform();
+            var vpt = this.getCurrentTransformation();
             ctx.save();
             if (this.active && !noTransform) {
                 var center;
@@ -8256,10 +8253,18 @@ fabric.util.object.extend(fabric.StaticCanvas.prototype, {
             var boundingRectFactor = this.getBoundingRectHeight() / this.getHeight();
             return this.scale(value / this.height / boundingRectFactor);
         },
+        getCurrentTransformation: function() {
+            var vpt = this.getViewportTransform(), tm = this.transformMatrix;
+            if (vpt[0] == 1 && vpt[1] == 0 && vpt[2] == 0 && vpt[3] == 1 && vpt[4] == 0 && vpt[5] == 0 && tm != null) {
+                return tm;
+            } else {
+                return vpt;
+            }
+        },
         setCoords: function() {
-            var strokeWidth = this.strokeWidth > 1 ? this.strokeWidth : 0, theta = degreesToRadians(this.angle), vpt = this.getViewportTransform(), f = function(p) {
-                return fabric.util.transformPoint(p, vpt);
-            }, w = this.width, h = this.height, capped = this.strokeLineCap === "round" || this.strokeLineCap === "square", vLine = this.type === "line" && this.width === 1, hLine = this.type === "line" && this.height === 1, strokeW = capped && hLine || this.type !== "line", strokeH = capped && vLine || this.type !== "line";
+            var strokeWidth = this.strokeWidth > 1 ? this.strokeWidth : 0, theta = degreesToRadians(this.angle), w = this.width, h = this.height, capped = this.strokeLineCap === "round" || this.strokeLineCap === "square", vLine = this.type === "line" && this.width === 1, hLine = this.type === "line" && this.height === 1, strokeW = capped && hLine || this.type !== "line", strokeH = capped && vLine || this.type !== "line", transformation = this.getCurrentTransformation(), f = function(p) {
+                return fabric.util.transformPoint(p, transformation);
+            };
             if (vLine) {
                 w = strokeWidth;
             } else if (hLine) {
@@ -8594,7 +8599,7 @@ fabric.util.object.extend(fabric.Object.prototype, {
         },
         drawBorders: function(ctx) {
             if (!this.hasBorders) return this;
-            var padding = this.padding, padding2 = padding * 2, vpt = this.getViewportTransform();
+            var padding = this.padding, padding2 = padding * 2, vpt = this.getCurrentTransformation();
             ctx.save();
             ctx.globalAlpha = this.isMoving ? this.borderOpacityWhenMoving : 1;
             ctx.strokeStyle = this.borderColor;
@@ -8631,7 +8636,7 @@ fabric.util.object.extend(fabric.Object.prototype, {
         },
         drawControls: function(ctx) {
             if (!this.hasControls) return this;
-            var size = this.cornerSize, size2 = size / 2, vpt = this.getViewportTransform(), strokeWidth = this.strokeWidth > 1 ? this.strokeWidth : 0, w = this.width, h = this.height, capped = this.strokeLineCap === "round" || this.strokeLineCap === "square", vLine = this.type === "line" && this.width === 1, hLine = this.type === "line" && this.height === 1, strokeW = capped && hLine || this.type !== "line", strokeH = capped && vLine || this.type !== "line";
+            var size = this.cornerSize, size2 = size / 2, vpt = this.getCurrentTransformation(), strokeWidth = this.strokeWidth > 1 ? this.strokeWidth : 0, w = this.width, h = this.height, capped = this.strokeLineCap === "round" || this.strokeLineCap === "square", vLine = this.type === "line" && this.width === 1, hLine = this.type === "line" && this.height === 1, strokeW = capped && hLine || this.type !== "line", strokeH = capped && vLine || this.type !== "line";
             if (vLine) {
                 w = strokeWidth;
             } else if (hLine) {
@@ -9042,18 +9047,9 @@ fabric.util.object.extend(fabric.Object.prototype, {
         if (options.width === options.widthAttr) {
             options.width = parsedAttributes.radius;
         }
-        fabric.log("OPTIONS: ");
-        fabric.log(options);
-        fabric.log(options.width === options.widthAttr);
-        fabric.log(options.height === options.heightAttr);
         var obj = new fabric.Circle(extend(parsedAttributes, options));
         obj.cx = parseFloat(element.getAttribute("cx")) || 0;
         obj.cy = parseFloat(element.getAttribute("cy")) || 0;
-        fabric.log("ELEMENT: " + obj.toString());
-        fabric.log("height: " + obj.height);
-        fabric.log("width: " + obj.width);
-        fabric.log("radius: " + obj.radius);
-        fabric.log("----------------------------");
         return obj;
     };
     function isValidRadius(attributes) {
